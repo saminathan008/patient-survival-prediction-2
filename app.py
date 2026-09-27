@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import joblib
+import os
 
 app = Flask(__name__)
 
 # Load trained model
-model = joblib.load("multi_cancer_model.pkl")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "multi_cancer_model.pkl")
+
+model = joblib.load(MODEL_PATH)
 
 cancer_types = [
     "Breast",
@@ -77,4 +81,10 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
